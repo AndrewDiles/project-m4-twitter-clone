@@ -1,62 +1,51 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-import { BrowserRouter as Router, NavLink, Switch, Route, Link } from 'react-router-dom';
-import { Icon } from 'react-icons-kit'
-import { home } from 'react-icons-kit/icomoon/home'
-import { user } from 'react-icons-kit/feather/user'
-import { bellO } from 'react-icons-kit/fa/bellO'
-import { bookmark } from 'react-icons-kit/feather/bookmark'
+import { BrowserRouter as Router, NavLink } from 'react-router-dom';
+import { Icon } from 'react-icons-kit';
+import { home } from 'react-icons-kit/icomoon/home';
+import { user } from 'react-icons-kit/feather/user';
+import { bellO } from 'react-icons-kit/fa/bellO';
+import { bookmark } from 'react-icons-kit/feather/bookmark';
 
 import { COLORS } from '../constants';
 
-import Logo from '../Logo'
+import Logo from '../Logo';
+import Button from '../Button';
 
 const NavBar = ({ children }) => {
 
-  const [activePage, setActivePage] = useState('Home');
-
-  const setNotifications = () => {
-    setActivePage('Notifications');
-    console.log('set to nots');
-  }
-
-  // let textSize = 2;
-  // function setTextSize() {
-  //   if (window.matchMedia('(max-width: 900px)').matches) {
-  //     textSize = 1.5;
-  //   }
-  //   else if (window.matchMedia('(max-width: 600px)').matches) {
-  //     textSize = 1.2;
-  //   }
-  // };
 
   return (
     <Wrapper>  
       <Logo/>
-      <Router>
-        <NavigationLink to='/'>
+        <NavigationLink exact to='/'>
           <IconElement size={32} icon={home}/>
+          <p>
             Home
+          </p>
         </NavigationLink>
-        <NavigationLink to='/profile' onClick = {setNotifications}>
+        <NavigationLink to='/profile'>
           <IconElement size={32} icon={user}/>
-          Profile
+          <p>
+            Profile
+          </p>
         </NavigationLink>
         <NavigationLink to='/notifications'>
           <IconElement size={32} icon={bellO}/>
-          Notifications
+          <p>
+            Notifications
+          </p>
         </NavigationLink>
         <NavigationLink to='/bookmarks' icon = {bookmark}>
           <IconElement size={32} icon={bookmark}/>
-          Bookmarks
+          <p>
+            Bookmarks
+          </p>
         </NavigationLink>
-        <NavigationLink to='/bookmarks' icon = {bookmark}>
-          <MeowButton>
-            Meow
-          </MeowButton>
-        </NavigationLink>
-      </Router>
+        <Button>
+          Meow
+        </Button>
     </Wrapper>
   )
 };
@@ -65,19 +54,24 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: left;
   text-align: left;
-  background-color: rgb(255,240,240);
+  /* background-color: rgb(255,240,240); */
   width: 30%;
   height: 100vh;
-  padding: 10% 0 0 5%;
+  padding: 5% 0 0 5%;
   @media (max-width: 900px) {
-    padding: 10% 0 0 25px;
+    padding: 5% 0 0 25px;
   }
   @media (max-width: 600px) {
-    padding: 10% 0 0 10px;
+    padding: 5% 0 0 10px;
   }
 `
 const IconElement = styled(Icon)`
   margin-right: 10px;
+  @media (max-width: 600px) {
+    & ~ p {
+      display: none;
+    }
+  }
 `
 const NavigationLink = styled(NavLink)`
   padding: 20px;
@@ -87,6 +81,7 @@ const NavigationLink = styled(NavLink)`
   border-radius: 25px;
   display: flex;
   flex-direction: row;
+  color: black;
   &:hover {
     background-color: ${COLORS.highlighted};
   }
@@ -104,17 +99,5 @@ const NavigationLink = styled(NavLink)`
     flex-direction: column;
   }
 `;
-const MeowButton = styled.button`
-  color: white;
-  border-radius: 25px;
-  background-color: ${COLORS.primary};
-  font-size: 2em;
-  @media (max-width: 1000px) {
-    font-size: 1.5em;
-  }
-  @media (max-width: 600px) {
-    font-size: 1.2em;
-  }
-`
 
 export default NavBar;

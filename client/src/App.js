@@ -1,9 +1,9 @@
 import React, { useReducer, useState} from 'react';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import {format} from 'date-fns';
+// import {format} from 'date-fns';
 
-import { StateContext } from './Components/StateContext';
+// import { ProfileContext } from './Components/ProfileContext';
 
 import GlobalStyles from './Components/GlobalStyles';
 import NavBar from './Components/NavBar'
@@ -12,33 +12,53 @@ import HomeFeed from './Components/HomeFeed'
 import Notifications from './Components/Notifications'
 import Profile from './Components/Profile'
 import TweetDetails from './Components/TweetDetails'
+// import Button from './Components/Button';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const initialProfile = {handle: null};
 
 const App = () => {
-  // const setActivePage = React.useContext(StateContext);
-  //   console.log(setActivePage);
-  //   setActivePage('home');
+  const [status, setStatus] = React.useState('idle');
+  const [currentUser, setCurrentUser] = React.useState(initialProfile);
+  
+  // console.log(toString(currentUser));
+  // console.log(currentUser);
 
-    const [activePage, setActivePage] = useState('Home');
-    const setNotifications = () => {
-      setActivePage('Notifications');
-      console.log('set to nots');
-    }
+  React.useEffect(() => {
+    setStatus('loading');
+    fetch('/api/treasurymog/profile')
+      .then(res => res.json())
+      // .then(data => console.log(data.success))
+      .then(data => setCurrentUser(data))
+      .then(setStatus('idle'))
+      // .then(console.log('updated current user'))
+  }, []);
+  // console.log(toString(currentUser));
+
   return (
     <>
       <GlobalStyles/>
       <Router>
         <Wrapper>
-          <NavBar />
+          {status === 'loading' ? (
+            <LeftWrapper>
+              <CircularProgress />
+            </LeftWrapper>
+          ):(
+            <NavBar />
+          )}
           <ActiveDisplay>
             <Switch>
               <Route exact path='/'>
-                <HomeFeed/>
+                  <HomeFeed
+                  currentUser = {currentUser.profile}
+                  status = {status}
+                  setStatus = {setStatus}
+                  />
               </Route>
               <Route exact path='/notifications'>
-                <Notifications
-                // onClick = {setNotifications}
-                />
+                <Notifications/>
               </Route>
               <Route exact path='/bookmarks'>
                 <Bookmarks/>
@@ -47,7 +67,11 @@ const App = () => {
                 <TweetDetails/>
               </Route>
               <Route exact path='/:profileId'>
-                <Profile/>
+                <Profile
+                userViewed = {currentUser.profile}
+                currentUser = {currentUser.profile}
+                setCurrentUser = {setCurrentUser}
+                />
               </Route>
             </Switch>
           </ActiveDisplay>
@@ -64,6 +88,15 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100vh;
 `;
+const LeftWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  /* background-color: rgb(255,240,240); */
+  width: 30%;
+  height: 100vh;
+`
 const ActiveDisplay = styled.div`
   /* background-color: red; */
   width: 70%;
