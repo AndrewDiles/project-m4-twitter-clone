@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled, { keyframes } from 'styled-components';
+
+import { Context } from '../Context';
 
 import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 import { Icon } from 'react-icons-kit';
@@ -7,6 +9,7 @@ import { home } from 'react-icons-kit/icomoon/home';
 import { user } from 'react-icons-kit/feather/user';
 import { bellO } from 'react-icons-kit/fa/bellO';
 import { bookmark } from 'react-icons-kit/feather/bookmark';
+import { feather } from 'react-icons-kit/feather/feather'
 
 import { COLORS } from '../constants';
 
@@ -14,7 +17,10 @@ import Logo from '../Logo';
 import Button from '../Button';
 
 const NavBar = ({ children }) => {
-
+  const {
+    currentUser,
+    setUserViewed
+  } = useContext(Context);
 
   return (
     <Wrapper>  
@@ -25,7 +31,7 @@ const NavBar = ({ children }) => {
             Home
           </p>
         </NavigationLink>
-        <NavigationLink to='/profile'>
+        <NavigationLink exact to='/profile'>
           <IconElement size={32} icon={user}/>
           <p>
             Profile
@@ -37,18 +43,33 @@ const NavBar = ({ children }) => {
             Notifications
           </p>
         </NavigationLink>
-        <NavigationLink to='/bookmarks' icon = {bookmark}>
+        <NavigationLink to='/bookmarks'>
           <IconElement size={32} icon={bookmark}/>
           <p>
             Bookmarks
           </p>
         </NavigationLink>
         <Button>
-          Meow
+          <ParentDiv>
+            <ButtonText>
+              Meow
+            </ButtonText>
+            <IconElement size={32} icon={feather}/>
+          </ParentDiv>
         </Button>
     </Wrapper>
   )
 };
+const ParentDiv = styled.div`
+  @media (min-width: 600px) {
+    i {
+      display: none !important;
+    }
+  }
+  @media (max-width: 600px) {
+    padding-left: 8px;
+  }
+`
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -65,6 +86,14 @@ const Wrapper = styled.div`
     padding: 5% 0 0 10px;
   }
 `
+const ButtonText = styled.p`
+  /* & ~ i > svg {
+    display: none;
+  } */
+@media (max-width: 600px) {
+    display: none;
+  }
+`
 const IconElement = styled(Icon)`
   margin-right: 10px;
   @media (max-width: 600px) {
@@ -74,6 +103,8 @@ const IconElement = styled(Icon)`
   }
 `
 const NavigationLink = styled(NavLink)`
+  /* align-items: center; */
+  text-align: center;
   padding: 20px;
   margin: 10px 10px 10px 0;
   font-size: 2em;
@@ -97,6 +128,7 @@ const NavigationLink = styled(NavLink)`
     font-size: 1.2em;
     display: flex;
     flex-direction: column;
+    text-align: left;
   }
 `;
 

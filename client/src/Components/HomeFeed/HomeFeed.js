@@ -6,13 +6,18 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import TweetDetails from '../TweetDetails';
 import NewTweet from '../NewTweet';
 
+import { setTwo, handleFetch } from '../constants';
 import { Context } from '../Context';
 
 // const initialFeed = {};
 // const initialTweetedIds = [];
 
-const HomeFeed = ({ currentUser, status, setStatus }) => {
+const HomeFeed = ({}) => {
   const {
+    setError,
+    status,
+    setStatus,
+    currentUser,
     feed,
     setFeed,
     tweetedIds,
@@ -24,18 +29,15 @@ const HomeFeed = ({ currentUser, status, setStatus }) => {
 
   // console.log('currentUser', currentUser);
   
-  const dispatch = function(input, set1, set2) {
-    set1(input);
-    set2(input.tweetIds);
-  }
   // ‘/api/me/home-feed’
   // fetch(`/api/${currentUser.handle}/feed`)
   React.useEffect(() => {
     if (currentUser === undefined) return;
     setStatus('loading');
     fetch(`/api/me/home-feed`)
-      .then(res => res.json())
-      .then(data => dispatch(data, setFeed, setTweetedIds))
+      .then(res => handleFetch(res, setError))
+      // .then(res => res.json())
+      .then(data => setTwo(data, setFeed, setTweetedIds))
       .then(setStatus('idle'))
   }, [currentUser]);
 
@@ -46,20 +48,14 @@ const HomeFeed = ({ currentUser, status, setStatus }) => {
       <CircularProgress />
     )
   }
-  
+  let width = '70%';
   return (
     <>
       <HomeTweet>
-        <HomeTweetText>
+        <HomeHeader>
           Home
-        </HomeTweetText>
-        <NewTweet
-        currentUser = {currentUser}
-        feed = {feed}
-        setFeed = {setFeed}
-        tweetedIds = {tweetedIds}
-        setTweetedIds = {setTweetedIds}
-        />
+        </HomeHeader>
+        <NewTweet/>
       </HomeTweet>
       
       <Tweets>
@@ -68,6 +64,7 @@ const HomeFeed = ({ currentUser, status, setStatus }) => {
           <TweetDetails
           key = {tweetId}
           tweet = {feed.tweetsById[tweetId]}
+          width = {width}
           // tweetId = {tweetId}
           // feed = {feed}
           // id = {feed.tweetsById[tweetId].id}
@@ -81,7 +78,7 @@ const HomeFeed = ({ currentUser, status, setStatus }) => {
 // {props.messages.map(message => (
 
 export default HomeFeed;
-const HomeTweetText = styled.div`
+const HomeHeader = styled.div`
   padding: 25px;
   font-weight: bold;
   font-size: 2em;

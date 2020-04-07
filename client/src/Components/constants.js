@@ -1,6 +1,6 @@
-import React from 'react';
+// import React from 'react';
 
-export const COLORS = {
+export  const COLORS = {
   // Bright purple:
   primary: 'hsl(258deg, 100%, 50%)',
   highlighted: 'hsla(258, 100%, 50%, 0.25)'
@@ -48,7 +48,49 @@ const formatMonth = function(monthNum) {
     break;
   };
   return month;
-}
+};
+const formatMonthLong = function(monthNum) {
+  let month = '';
+  switch (monthNum){
+    case 1:
+      month = 'January';
+    break;
+    case 2:
+      month = 'February';
+    break;
+    case 3:
+      month = 'March';
+    break;
+    case 4:
+      month = 'April';
+    break;
+    case 5:
+      month = 'May';
+    break;
+    case 6:
+      month = 'June';
+    break;
+    case 7:
+      month = 'July';
+    break;
+    case 8:
+      month = 'August';
+    break;
+    case 9:
+      month = 'September';
+    break;
+    case 10:
+      month = 'October';
+    break;
+    case 11:
+      month = 'November';
+    break;
+    case 12:
+      month = 'December';
+    break;
+  };
+  return month;
+};
 const daySuffix = function(day) {
   let suffix = '';
   if (day[1] === '1') suffix = 'st';
@@ -56,7 +98,7 @@ const daySuffix = function(day) {
   else if (day[1] === '3') suffix = 'rd';
   else suffix = 'th';
   return suffix;
-}
+};
 export const formatDateLong = function(datestring) {
   let hour = parseInt(datestring.slice(11,13));
   let ampm = '';
@@ -78,4 +120,23 @@ export const formatDateMedium = function(datestring) {
   let suffix = daySuffix(day);
   let result = `${month} ${day}${suffix}`;
   return result;
-}
+};
+export const formatDateSmall = function(datestring) {
+  let monthNum = parseInt(datestring.slice(5,7));
+  let month = formatMonthLong(monthNum);
+  let year = datestring.slice(0,4);
+  let result = `${month} ${year}`;
+  return result;
+};
+
+
+export const setTwo = function(input, set1, set2) {
+  set1(input);
+  set2(input.tweetIds);
+};
+export const handleFetch = function(res, setError) {
+  if (res.status > 400) setError(true);
+  // else setError(false);
+  let result = res.json();
+  return result;
+};

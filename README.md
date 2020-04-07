@@ -1,5 +1,7 @@
 # Twitter project
 
+## From Scott: "proxy": "http://localhost:31415",
+
 This project asks you to create a Twitter clone, "Critter":
 
 Your focus will be on the front-end: an API is provided, and documented in `server/API_DOCS.md`. You can read this document thoroughly to build an understanding of what the different endpoints are, and how they work.

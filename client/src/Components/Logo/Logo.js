@@ -17,6 +17,16 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: left;
   margin-left: 10px;
+  @media (max-width: 1000px) {
+    justify-content: center;
+    margin-left: 0;
+    margin-right: 15px;
+  }
+  @media (max-width: 600px) {
+    justify-content: left;
+    margin-left: 10px;
+    margin-right: 0;
+  }
 `
 const LogoSvg = styled.svg`
   height: 50px;

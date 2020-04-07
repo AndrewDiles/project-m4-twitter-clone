@@ -1,39 +1,73 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
-import Button from '../Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-const NewTweet = ({ currentUser }) => {
+import Button from '../Button';
+import { setTwo, handleFetch } from '../constants';
+import { Context } from '../Context';
+
+const NewTweet = () => {
+  const {
+    setError,
+    status,
+    setStatus,
+    currentUser,
+    setFeed,
+    setTweetedIds
+  } = useContext(Context);
+  
   const [charactersRemaining, setCharactersRemaining] = React.useState(280);
   const [tweetText, setTweetText] = React.useState('');
-
+  
+  if (currentUser === null) {
+    return <CircularProgress />
+  }
   const handleKeyPress = function(ev) {
     let length = ev.target.value.length;
     if (length > 280) return;
     setTweetText(ev.target.value);
     setCharactersRemaining(280-length);
   };
+  const tweetArea = document.getElementById('tweetTextId');
+
+  // tweetArea ? console.log('tweetArea: ', tweetArea.childNodes[0]) : console.log('not a thing');
+  // tweetArea ? console.log('tweetArea: ', tweetArea.value) : console.log('not a thing');
 
   return (
     <Wrapper>  
       <form
         onSubmit={(event) => {
             event.preventDefault();
-            console.log(tweetText);
+            setStatus('sending');
+            const tweetArea = document.getElementById('tweetTextId');
+            console.log('tweetText: ',tweetText);
             fetch("/api/tweet", {
                 method: "POST",
-                body: JSON.stringify({tweet: tweetText}),
+                body: JSON.stringify({status: tweetText}),
                 headers: {
                     "Accept": 'application/json',
                     "Content-Type": 'application/json'
                 }
             })
-            .then(res => res.json())
-            .then(data => console.log(data))
+            .then(res => handleFetch(res, setError))
+            // .then(data => console.log(data))
+            // .then(setCurrentUser(currentUser))
+            // .then(tweetArea.childNodes[0] = '')
+            .then(tweetArea.value = '')
+            .then(setTweetText(''))
+            .then(setCharactersRemaining(280))
+
+            fetch(`/api/me/home-feed`)
+            .then(res => handleFetch(res, setError))
+            .then(data => setTwo(data, setFeed, setTweetedIds))
+            .then(setStatus('idle'))
         }}
       >
-        <AvatarImg src = {currentUser.avatarSrc}/>
-        <TweetInput type = 'text'
+        <AvatarImg src = {currentUser.profile.avatarSrc}/>
+        <TweetInput
+        id = 'tweetTextId'
+        type = 'text'
         placeholder = "What's happening?"
         onChange = {handleKeyPress}
         value = {tweetText}
@@ -50,7 +84,11 @@ const NewTweet = ({ currentUser }) => {
           }}
           // style="color:blue;font-size:46px;">
           >
-            Meow
+            {status === 'sending' ? (
+              <CircularProgress/>
+            ) : (
+              'Meow'
+            )}
           </Button>
           <Counter
           charactersRemaining = {charactersRemaining}
@@ -96,6 +134,8 @@ const TweetInput = styled.textarea`
   height: 320px;
   font-size: 1.8em;
   resize: none;
+  border: solid lightgrey;
+  border-top: none;
   &:focus {
     outline: none;
 }
